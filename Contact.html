@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Contact</title>
+  <link rel="stylesheet" href="https://unpkg.com/@sakun/system.css" />
+  <style>
+    .menu-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #c0c0c0;
+      display: flex;
+      align-items: center;
+      padding: 4px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      border-bottom: 2px solid black;
+      box-shadow: inset 0 -1px 0 #fff;
+      gap: 1rem;
+    }
+    .menu-bar a {
+      text-decoration: none;
+    }
+    
+    body {
+      padding-top: 30px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-icons img {
+      height: 32px;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-bar">
+    <a href="/" class="btn">Home</a>
+    <a href="/contact" class="btn">Contact</a>
+    <a href="/about" class="btn">About</a>
+  </div>
+
+  <div class="window" style="width: 35rem; margin: 2rem auto;">
+    <div class="title-bar">
+      <h1 class="title">Contact</h1>
+    </div>
+    <div class="separator"></div>
+    <div class="window-pane contact-form">
+      <form method="post">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" required>
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit" class="btn">Send</button>
+      </form>
+      <div class="social-icons">
+        <a href="https://www.linkedin.com/in/ashfin-enayet-59b0001b4/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Ec-linkedin.png" alt="LinkedIn">
+        </a>
+        <a href="mailto:ashfin.enayet@gmail.com">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Mail_%28iOS%29.svg/1920px-Mail_%28iOS%29.svg.png?20141024222707" alt="Gmail">
+        </a>
+        <a href="https://instagram.com/ashfin.enayet" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/58/Instagram-Icon.png" alt="Instagram">
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
