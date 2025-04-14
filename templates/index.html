@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Retro EXIF Viewer</title>
+  <link rel="stylesheet" href="https://unpkg.com/@sakun/system.css" />
+  <style>
+    .menu-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #c0c0c0;
+      display: flex;
+      align-items: center;
+      padding: 4px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      border-bottom: 2px solid black;
+      box-shadow: inset 0 -1px 0 #fff;
+      gap: 1rem;
+    }
+    .menu-bar a {
+      text-decoration: none;
+      font-weight: bold;
+      color: black;
+    }
+    body {
+      padding-top: 40px;
+      font-family: sans-serif;
+    }
+    .window {
+      width: 40rem;
+      margin: 2rem auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-bar">
+    <a href="/" class="btn">Home</a>
+    <a href="/contact" class="btn">Contact</a>
+    <a href="/about" class="btn">About</a>
+    <a href="/viewer" class="btn">Viewer</a>
+  </div>
+
+  <div class="window">
+    <div class="title-bar">
+      <h1 class="title">Welcome to the EXIF Viewer</h1>
+    </div>
+    <div class="separator"></div>
+    <div class="window-pane">
+      <p>This retro-themed EXIF Viewer lets you browse metadata from your personal photos in a classic 90s UI style.</p>
+      <ul>
+        <li>🖼️ Choose a photo to see its EXIF metadata</li>
+        <li>📊 Visualize your camera usage trends</li>
+        <li>📆 Track your photography habits over time</li>
+        <li>🧠 Explore animated correlations and exposure settings</li>
+      </ul>
+      <p>Use the navigation bar to get started!</p>
+    </div>
+  </div>
+</body>
+</html>
