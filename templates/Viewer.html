@@ -169,9 +169,9 @@
     </div>
     <div class="separator"></div>
     <div class="window-pane image-container">
-      <div class="loader"></div>
-      <img class="fade-in" src="/image/{{ selected_file }}" alt="Selected Photo" style="max-width: 100%; height: auto; display: block; margin: auto;">
-    </div>
+      <div class="loader" id="img-loader"></div>
+      <img id="preview-img" class="fade-in" alt="Selected Photo" style="max-width: 100%; height: auto; display: block; margin: auto;">
+    </div>    
   </div>
 
   <div class="window" style="width: 40rem; top: 300px; left: 150px;">
@@ -192,5 +192,21 @@
     </div>
   </div>
   {% endif %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const imageUrl = "{{ selected_file }}";  // Injected from Flask
+      const img = document.getElementById('preview-img');
+      const loader = document.getElementById('img-loader');
+  
+      // Start loading image in background
+      const preload = new Image();
+      preload.src = imageUrl;
+      preload.onload = () => {
+        img.src = preload.src;
+        img.classList.add('loaded');
+        loader.style.display = 'none';
+      };
+    });
+  </script>  
 </body>
 </html>
