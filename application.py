@@ -1,83 +1,68 @@
 import os
 import random
-from flask import Flask, render_template_string, send_from_directory, request, render_template
+from flask import Flask, request, render_template
 from flask_compress import Compress
-import exifread
-import pandas as pd
 import boto3
-from functools import lru_cache
 
 app = Flask(__name__)
 Compress(app)
 
+# S3 config
 bucket_name = 'fuji-images'
-region = 'us-east-2'  # e.g., 'us-east-1'
+region = 'us-east-2'
+cloudfront_domain = os.getenv("CLOUDFRONT_DOMAIN")  # optional
 
 s3 = boto3.client('s3')
-
-# List all files in the bucket
 objects = s3.list_objects_v2(Bucket=bucket_name)
-urls = []
-# Generate public URLs (assuming your bucket is public or files are public)
+
+# Build image URLs from S3 keys
+s3_images = []
 if 'Contents' in objects:
     for obj in objects['Contents']:
         key = obj['Key']
-        url = f"https://{bucket_name}.s3.{region}.amazonaws.com/{key}"
-        urls.append(url)
+        if key.lower().endswith(('.jpg', '.jpeg', '.png')):
+            if cloudfront_domain:
+                url = f"https://{cloudfront_domain}/{key}"
+            else:
+                url = f"https://{bucket_name}.s3.{region}.amazonaws.com/{key}"
+            s3_images.append({"key": key, "url": url})
 else:
-    print("No files found.")
+    print("⚠️ No images found in S3 bucket.")
 
-
-IMG_DIR = 'static/images'
-IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png')
-image_files = [f for f in os.listdir(IMG_DIR) if f.lower().endswith(IMAGE_EXTENSIONS)]
-
-@lru_cache(maxsize=256)
-def get_exif_data(image_path):
-    try:
-        with open(image_path, 'rb') as f:
-            tags = exifread.process_file(f, details=False)
-            return {str(tag): str(tags[tag]) for tag in tags}
-    except Exception as e:
-        return {"Error": f"Could not extract EXIF data: {e}"}
-
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 @app.route("/viewer")
 def viewer():
-    if not image_files:
-        return "No images found in local directory."
+    if not s3_images:
+        return "No images available from S3."
 
-    selected_file = request.args.get("filename")
-    if request.args.get("random") or not selected_file:
-        selected_file = random.choice(image_files)
+    selected_key = request.args.get("filename")
+    if request.args.get("random") or not selected_key:
+        selected_image = random.choice(s3_images)
+    else:
+        # Match the requested key to a known one
+        selected_image = next((img for img in s3_images if img["key"] == selected_key), None)
+        if not selected_image:
+            return f"Image not found: {selected_key}"
 
-    image_path = os.path.join(IMG_DIR, selected_file)
-
-    # Extract EXIF data from the local image file
-    metadata = get_exif_data(image_path)
+    # Optional: load precomputed EXIF from S3 (disabled for now)
+    metadata = {"Note": "Metadata unavailable in this version."}
 
     return render_template("Viewer.html",
-                           image_files=image_files,
-                           selected_file=selected_file,
+                           image_files=s3_images,
+                           selected_file=selected_image["url"],
+                           selected_key=selected_image["key"],
                            metadata=metadata)
-
-@app.route("/image/<filename>")
-def serve_image(filename):
-    return send_from_directory(IMG_DIR, filename)
-@app.route("/")
-def home():
-    return render_template("index.html")  # Your homepage
-
 
 @app.route("/about")
 def about_page():
-    return render_template("About.html")  # Uses templates/About.html
+    return render_template("About.html")
 
 @app.route("/contact")
 def contact_page():
-    return render_template("Contact.html")  # Uses templates/Contact.html
-
-
+    return render_template("Contact.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

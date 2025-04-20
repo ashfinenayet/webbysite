@@ -118,15 +118,6 @@
         toggleBtn.onclick = () => win.classList.toggle('minimized');
         titleBar.appendChild(toggleBtn);
       });
-
-      const img = document.querySelector('img.fade-in');
-      if (img) {
-        img.addEventListener('load', () => {
-          img.classList.add('loaded');
-          const loader = document.querySelector('.loader');
-          if (loader) loader.style.display = 'none';
-        });
-      }
     });
   </script>
 </head>
@@ -150,8 +141,8 @@
         <section class="field-row" style="justify-content: space-between;">
           <label for="filename">Choose Image:</label>
           <select name="filename" id="filename" onchange="this.form.submit()">
-            {% for file in image_files %}
-              <option value="{{ file }}" {% if file == selected_file %}selected{% endif %}>{{ file }}</option>
+            {% for img in image_files %}
+              <option value="{{ img.key }}" {% if img.key == selected_key %}selected{% endif %}>{{ img.key }}</option>
             {% endfor %}
           </select>
           <button class="btn" type="submit" name="random" value="1">🎲 Random</button>
@@ -192,20 +183,22 @@
     </div>
   </div>
   {% endif %}
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const imageUrl = "{{ selected_file }}";  // Injected from Flask
+      const imageUrl = "{{ selected_file }}";
       const img = document.getElementById('preview-img');
       const loader = document.getElementById('img-loader');
-  
-      // Start loading image in background
-      const preload = new Image();
-      preload.src = imageUrl;
-      preload.onload = () => {
-        img.src = preload.src;
-        img.classList.add('loaded');
-        loader.style.display = 'none';
-      };
+
+      if (img && imageUrl) {
+        const preload = new Image();
+        preload.src = imageUrl;
+        preload.onload = () => {
+          img.src = preload.src;
+          img.classList.add('loaded');
+          loader.style.display = 'none';
+        };
+      }
     });
   </script>  
 </body>
