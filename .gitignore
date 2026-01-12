@@ -5,3 +5,5 @@
 !.elasticbeanstalk/*.global.yml
 .DS_Store
 flask-exif-viewer/
+.venv
+.env
